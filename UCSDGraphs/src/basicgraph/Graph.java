@@ -121,8 +121,13 @@ public abstract class Graph {
 	 * @return The degree sequence of this graph.
 	 */
 	public List<Integer> degreeSequence() {
-		// XXX: Implement in part 1 of week 2
-		return null;
+		List<Integer> degrees = new ArrayList<>();
+		for(int v = 0; v<numVertices;v++) {
+			System.out.println(v+" : in"+getInNeighbors(v)+" out: "+getNeighbors(v));
+		
+			degrees.add(getInNeighbors(v).size()+getNeighbors(v).size());
+		}
+		return degrees;
 	}
 	
 	/**
@@ -243,7 +248,7 @@ public abstract class Graph {
 		GraphAdjList graphFromFile = new GraphAdjList();
 		GraphLoader.loadRoadMap("data/testdata/simpletest.map", graphFromFile);
 		System.out.println(graphFromFile);
-		
+		//System.out.println("verticies: "+graphFromFile.getNumVertices()+" edges: "+graphFromFile.getNumEdges());
 		System.out.println("Observe all degrees are <= 12.");
 		System.out.println("****");
 

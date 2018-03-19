@@ -25,7 +25,11 @@ public class GraphAdjMatrix extends Graph {
 	public GraphAdjMatrix () {
 		adjMatrix = new int[defaultNumVertices][defaultNumVertices];
 	}
-	
+	public void fillMatrix() {
+		adjMatrix[1][2]=1;
+		adjMatrix[0][3]=1;
+		adjMatrix[3][0]=1;
+	}
 	/** 
 	 * Implement the abstract method for adding a vertex.
 	 * If need to increase dimensions of matrix, double them
@@ -104,8 +108,35 @@ public class GraphAdjMatrix extends Graph {
 	 * @return List<Integer> a list of indices of vertices.  
 	 */	
 	public List<Integer> getDistance2(int v) {
-		// XXX Implement this method in week 2
-		return null;
+		Integer[][] distanceMatrix = new Integer[defaultNumVertices][defaultNumVertices]; 
+		for(int i = 0; i<defaultNumVertices;i++) {
+			for(int j = 0; j<defaultNumVertices;j++) {
+				distanceMatrix[i][j] = multiplyMatrixHelper(i, j);
+			}
+		}
+		for(int i = 0; i<defaultNumVertices;i++) {
+			for(int j = 0; j<defaultNumVertices;j++) {
+				System.out.print(distanceMatrix[i][j]+"  ");
+			}
+			System.out.println();
+		}
+		List<Integer> distanceVertices = new ArrayList<>();
+		for (int i = 0; i<defaultNumVertices; i++) {
+			if(adjMatrix[v][i]>0)
+				distanceVertices.add(adjMatrix[v][i]);
+			
+		}
+		return distanceVertices;
+	}
+	private Integer multiplyMatrixHelper(int row, int col)
+	{
+		Integer result = 0;
+		//System.out.println(row+" "+col);
+		for(int i = 0; i<defaultNumVertices;i++) {
+			//System.out.println(adjMatrix[row][i]+"*"+adjMatrix[col][i]+" ");
+			result+=adjMatrix[row][i]*adjMatrix[i][col];
+		}
+		return result;
 	}
 	
 	/**
@@ -123,6 +154,12 @@ public class GraphAdjMatrix extends Graph {
 			}
 		}
 		return s;
+	}
+	
+	public static void main(String[] args) {
+		GraphAdjMatrix a = new GraphAdjMatrix();
+		a.fillMatrix();
+		System.out.println(a.getDistance2(1));
 	}
 
 }
