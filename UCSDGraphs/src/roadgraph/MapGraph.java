@@ -8,7 +8,15 @@
 package roadgraph;
 
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -25,13 +33,15 @@ import util.GraphLoader;
 public class MapGraph {
 	//TODO: Add your member variables here in WEEK 3
 	
-	
+	private Map<GeographicPoint,Map<GeographicPoint,Road>> graph;
 	/** 
 	 * Create a new empty MapGraph 
 	 */
 	public MapGraph()
 	{
 		// TODO: Implement in this constructor in WEEK 3
+		graph = new HashMap<>();
+		
 	}
 	
 	/**
@@ -40,8 +50,8 @@ public class MapGraph {
 	 */
 	public int getNumVertices()
 	{
-		//TODO: Implement this method in WEEK 3
-		return 0;
+		
+		return graph.size();
 	}
 	
 	/**
@@ -50,8 +60,8 @@ public class MapGraph {
 	 */
 	public Set<GeographicPoint> getVertices()
 	{
-		//TODO: Implement this method in WEEK 3
-		return null;
+		
+		return graph.keySet();
 	}
 	
 	/**
@@ -60,8 +70,13 @@ public class MapGraph {
 	 */
 	public int getNumEdges()
 	{
-		//TODO: Implement this method in WEEK 3
-		return 0;
+		int numEdges=0;
+		for (GeographicPoint point : graph.keySet()) {
+			Set<GeographicPoint> pointNeighbours = graph.get(point).keySet();
+			if(!pointNeighbours.isEmpty())
+				numEdges+=pointNeighbours.size();
+		}
+		return numEdges;
 	}
 
 	
@@ -75,7 +90,10 @@ public class MapGraph {
 	 */
 	public boolean addVertex(GeographicPoint location)
 	{
-		// TODO: Implement this method in WEEK 3
+		if(location!=null && !graph.containsKey(location)) {
+			graph.put(location, new HashMap<GeographicPoint,Road>());
+			return true;
+		}
 		return false;
 	}
 	
@@ -94,7 +112,9 @@ public class MapGraph {
 	public void addEdge(GeographicPoint from, GeographicPoint to, String roadName,
 			String roadType, double length) throws IllegalArgumentException {
 
-		//TODO: Implement this method in WEEK 3
+		Map<GeographicPoint,Road> neighbours = graph.get(from);
+		if(!neighbours.containsKey(to))
+			neighbours.put(to,new Road(from, to, roadName, roadType, length));
 		
 	}
 	
@@ -123,8 +143,22 @@ public class MapGraph {
 	public List<GeographicPoint> bfs(GeographicPoint start, 
 			 					     GeographicPoint goal, Consumer<GeographicPoint> nodeSearched)
 	{
+		Deque<GeographicPoint> track = new ArrayDeque<>();
+		Set<GeographicPoint> visited = new HashSet<>();
+		Map<GeographicPoint,GeographicPoint> parent = new HashMap<>();
 		// TODO: Implement this method in WEEK 3
-		
+		track.push(start);
+		visited.add(start);
+		while(!track.isEmpty()) {
+			GeographicPoint curr = track.pop();
+			if (curr == goal)
+				return new ArrayList<>();
+			for(GeographicPoint n:graph.get(curr).keySet()) {
+				visited.add(n);
+				parent.put(curr, n);
+				track.push(n);
+			}
+		}
 		// Hook for visualization.  See writeup.
 		//nodeSearched.accept(next.getLocation());
 
